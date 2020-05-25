@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import me.amryousef.small_dynamic_module.SecondActivity
+
+//import me.amryousef.small_dynamic_module.SecondActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,11 +20,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         title = "Main Activity"
         main_to_activity2_button.setOnClickListener {
-            val intent = Intent(this, SecondActivity::class.java)
-            startActivityForResult(
-                intent,
-                REQUEST_CODE
-            )
+//            val intent = Intent(this, SecondActivity::class.java)
+//            startActivityForResult(
+//                intent,
+//                REQUEST_CODE
+//            )
         }
     }
 

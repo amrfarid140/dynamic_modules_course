@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:progressDestination="@id/progressFragment"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/progressFragment"
+        android:label="ProgressFragment"
+        android:name="me.amryousef.example.CustomProgressFragment" />
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="me.amryousef.example.MainFragment"
+        android:label="MainFragment" />
+
+    <activity
+        android:id="@+id/secondActivity"
+        android:name="me.amryousef.small_dynamic_module.SecondActivity"
+        android:label="SecondActivity"
+        app:moduleName="small_dynamic_module" />
+</navigation>

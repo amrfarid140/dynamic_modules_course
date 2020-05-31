@@ -7,15 +7,20 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.google.android.play.core.splitinstall.SplitInstallManager
+import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
+import com.google.android.play.core.splitinstall.SplitInstallRequest
 import kotlinx.android.synthetic.main.activity_main.*
 
-//import me.amryousef.small_dynamic_module.SecondActivity
+//me.amryousef.small_dynamic_module.SecondActivity
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE = 1
     }
+
+    private lateinit var installManager: SplitInstallManager
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
@@ -26,12 +31,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Main Activity"
+        installManager = SplitInstallManagerFactory.create(applicationContext)
         main_to_activity2_button.setOnClickListener {
-//            val intent = Intent(this, SecondActivity::class.java)
+            installManager.startInstall(
+                SplitInstallRequest.newBuilder()
+                    .addModule("small_dynamic_module")
+                    .build()
+            ).addOnSuccessListener {
+                //            val intent = Intent(this, SecondActivity::class.java)
 //            startActivityForResult(
 //                intent,
 //                REQUEST_CODE
 //            )
+                Toast.makeText(this, "Install Success", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(this, "Install Failed", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -39,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Toast.makeText(this, "2nd Activity finished", Toast.LENGTH_SHORT).show()
+            installManager.deferredUninstall(listOf("small_dynamic_module"))
         }
     }
 }

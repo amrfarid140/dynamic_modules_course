@@ -1,10 +1,12 @@
 package me.amryousef.example
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.play.core.splitcompat.SplitCompat
 import kotlinx.android.synthetic.main.activity_main.*
 
 //import me.amryousef.small_dynamic_module.SecondActivity
@@ -13,6 +15,11 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE = 1
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(newBase)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

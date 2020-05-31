@@ -7,14 +7,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.google.android.play.core.splitinstall.SplitInstallManager
-import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.google.android.play.core.splitinstall.SplitInstallRequest
+import com.google.android.play.core.splitinstall.*
+import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
+import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SplitInstallStateUpdatedListener {
 
     companion object {
         const val REQUEST_CODE = 1
@@ -32,23 +31,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         title = "Main Activity"
         installManager = SplitInstallManagerFactory.create(applicationContext)
+        installManager.registerListener(this)
         main_to_activity2_button.setOnClickListener {
             installManager.startInstall(
                 SplitInstallRequest.newBuilder()
                     .addModule("small_dynamic_module")
                     .build()
-            ).addOnSuccessListener {
-                getActivityClass()?.let { activityClass ->
-                    val intent = Intent(this, activityClass)
-                    startActivityForResult(
-                        intent,
-                        REQUEST_CODE
-                    )
-                } ?: Toast.makeText(this, "Cannot find activity class", Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener {
-                Toast.makeText(this, "Install Failed", Toast.LENGTH_SHORT).show()
-            }
+            )
         }
+    }
+
+    override fun onDestroy() {
+        installManager.unregisterListener(this)
+        super.onDestroy()
     }
 
     private fun getActivityClass(): Class<*>? {
@@ -64,6 +59,30 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Toast.makeText(this, "2nd Activity finished", Toast.LENGTH_SHORT).show()
             installManager.deferredUninstall(listOf("small_dynamic_module"))
+        }
+    }
+
+    override fun onStateUpdate(state: SplitInstallSessionState?) {
+        when (state?.status()) {
+            REQUIRES_USER_CONFIRMATION -> {
+                installManager.startConfirmationDialogForResult(
+                    state,
+                    this,
+                    123
+                )
+            }
+            SplitInstallSessionStatus.INSTALLED -> {
+                getActivityClass()?.let { activityClass ->
+                    val intent = Intent(this, activityClass)
+                    startActivityForResult(
+                        intent,
+                        REQUEST_CODE
+                    )
+                } ?: Toast.makeText(this, "Cannot find activity class", Toast.LENGTH_SHORT).show()
+            }
+            SplitInstallSessionStatus.FAILED -> {
+                Toast.makeText(this, "Install Failed", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

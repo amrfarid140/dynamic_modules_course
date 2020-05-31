@@ -16,11 +16,29 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            debuggable false
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("signing-key")
+            storePassword 'abc123'
+            keyAlias 'key'
+            keyPassword 'abc123'
+        }
+    }
+
+    dynamicFeatures = [":small_dynamic_module"]
 }
 
 dependencies {

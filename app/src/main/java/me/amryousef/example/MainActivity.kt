@@ -12,7 +12,7 @@ import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import kotlinx.android.synthetic.main.activity_main.*
 
-//me.amryousef.small_dynamic_module.SecondActivity
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,15 +38,24 @@ class MainActivity : AppCompatActivity() {
                     .addModule("small_dynamic_module")
                     .build()
             ).addOnSuccessListener {
-                //            val intent = Intent(this, SecondActivity::class.java)
-//            startActivityForResult(
-//                intent,
-//                REQUEST_CODE
-//            )
-                Toast.makeText(this, "Install Success", Toast.LENGTH_SHORT).show()
+                getActivityClass()?.let { activityClass ->
+                    val intent = Intent(this, activityClass)
+                    startActivityForResult(
+                        intent,
+                        REQUEST_CODE
+                    )
+                } ?: Toast.makeText(this, "Cannot find activity class", Toast.LENGTH_SHORT).show()
             }.addOnFailureListener {
                 Toast.makeText(this, "Install Failed", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun getActivityClass(): Class<*>? {
+        return try {
+            Class.forName("me.amryousef.small_dynamic_module.SecondActivity")
+        } catch (exception: ClassNotFoundException) {
+            null
         }
     }
 

@@ -13,8 +13,8 @@ import com.google.android.play.core.splitinstall.SplitInstallSessionState
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION
-import com.google.android.play.core.splitinstall.testing.FakeSplitInstallManagerFactory
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), SplitInstallStateUpdatedListener {
@@ -23,7 +23,8 @@ class MainActivity : AppCompatActivity(), SplitInstallStateUpdatedListener {
         const val REQUEST_CODE = 1
     }
 
-    private lateinit var installManager: SplitInstallManager
+    @Inject
+    lateinit var installManager: SplitInstallManager
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
@@ -31,10 +32,14 @@ class MainActivity : AppCompatActivity(), SplitInstallStateUpdatedListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DaggerApplicationComponent
+            .builder()
+            .application(application)
+            .build()
+            .inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Main Activity"
-        installManager = FakeSplitInstallManagerFactory.create(applicationContext)
         installManager.registerListener(this)
         main_to_activity2_button.setOnClickListener {
             installManager.startInstall(

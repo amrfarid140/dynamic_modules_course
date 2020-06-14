@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -42,6 +43,39 @@ android {
     dynamicFeatures = [":small_dynamic_module"]
 }
 
+afterEvaluate {
+    bundleDebug.doLast {
+        javaexec {
+            main="-jar"
+            args= [
+                    "${rootDir}/bundletool.jar",
+                    "build-apks",
+                    "--bundle=${rootDir}/app/build/outputs/bundle/debug/app-debug.aab",
+                    "--output=${rootDir}/app/build/outputs/apks/debug/app-debug.apks",
+                    "--ks=${rootDir}/app/key",
+                    "--ks-pass=pass:abc123",
+                    "--ks-key-alias=key",
+                    "--key-pass=pass:abc123",
+                    "--local-testing",
+                    "--overwrite"
+            ]
+        }
+    }
+}
+
+task deploy {
+    doLast {
+        javaexec {
+            main="-jar"
+            args = [
+                    "${rootDir}/bundletool.jar",
+                    "install-apks",
+                    "--apks=${rootDir}/app/build/outputs/apks/debug/app-debug.apks"
+            ]
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -49,6 +83,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.play:core-ktx:1.7.0'
+    implementation 'com.google.dagger:dagger:2.28'
+    kapt 'com.google.dagger:dagger-compiler:2.28'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

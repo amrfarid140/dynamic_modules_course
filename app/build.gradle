@@ -20,8 +20,14 @@ android {
             storeFile file("key")
             storePassword 'abc123'
             keyPassword 'abc123'
-            keyAlias 'key0'
+            keyAlias 'key'
         }
+    }
+
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
     }
 
     buildTypes {

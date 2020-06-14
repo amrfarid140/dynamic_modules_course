@@ -7,9 +7,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.google.android.play.core.splitinstall.*
+import com.google.android.play.core.splitinstall.SplitInstallManager
+import com.google.android.play.core.splitinstall.SplitInstallRequest
+import com.google.android.play.core.splitinstall.SplitInstallSessionState
+import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION
+import com.google.android.play.core.splitinstall.testing.FakeSplitInstallManagerFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -30,7 +34,7 @@ class MainActivity : AppCompatActivity(), SplitInstallStateUpdatedListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Main Activity"
-        installManager = SplitInstallManagerFactory.create(applicationContext)
+        installManager = FakeSplitInstallManagerFactory.create(applicationContext)
         installManager.registerListener(this)
         main_to_activity2_button.setOnClickListener {
             installManager.startInstall(

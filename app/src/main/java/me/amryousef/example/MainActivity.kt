@@ -32,11 +32,7 @@ class MainActivity : AppCompatActivity(), SplitInstallStateUpdatedListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        DaggerApplicationComponent
-            .builder()
-            .application(application)
-            .build()
-            .inject(this)
+        application.applicationComponent().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         title = "Main Activity"

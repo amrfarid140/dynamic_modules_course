@@ -12,7 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "me.amryousef.small_dynamic_module.CustomTestRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -32,6 +32,10 @@ dependencies {
     implementation project(":app")
     testImplementation 'junit:junit:4.12'
     kapt 'com.google.dagger:dagger-compiler:2.28'
+
+    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.28'
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 

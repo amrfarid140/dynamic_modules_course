@@ -7,13 +7,16 @@ fun Application.applicationComponent(): ApplicationComponent {
     return (this as MyApplication).applicationComponent
 }
 
-class MyApplication : SplitCompatApplication() {
+open class MyApplication : SplitCompatApplication() {
     lateinit var applicationComponent: ApplicationComponent
 
     override fun onCreate() {
-        applicationComponent = DaggerApplicationComponent.builder()
-            .application(this)
-            .build()
+        applicationComponent = buildApplicationComponent()
         super.onCreate()
     }
+
+    open fun buildApplicationComponent() =
+        DaggerApplicationComponent.builder()
+            .application(this)
+            .build()
 }
